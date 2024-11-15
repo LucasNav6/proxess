@@ -1,0 +1,22 @@
+html
+  head
+    title(lang='en') Proxess
+    meta(content='text/html; charset=UTF-8' http-equiv='Content-Type')
+    meta(name='x-apple-disable-message-reformatting')
+    link(rel='stylesheet' type='text/css' href='./proxess.styles.css')
+    style.
+        #{cssContent}
+  body
+    section.proxess-container
+      h1 Proxess
+      h2 Confirm your email address
+      p Hello #{NAME},
+      p Welcome to Proxess! We&apos;re excited to have you join our community.
+      p Enter it in your open browser window:
+      span.code #{CODE}
+      p This link will expire in 10 minutes.
+      small
+        | This invitation was intended for #{NAME}. This invite was sent from
+        | #{LOCATION}. If you were not expecting this invitation, you can ignore
+        | this email. If you are concerned about your account&apos;s safety, please
+        | reply to this email to get in touch with us soon.

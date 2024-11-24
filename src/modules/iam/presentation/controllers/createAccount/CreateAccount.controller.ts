@@ -1,8 +1,8 @@
 import { Controller, Post, Query, UseFilters, UsePipes } from '@nestjs/common';
 import { CreateAccountService } from './CreateAccount.service';
 import { CatchExceptionFilter } from '@/shared/filters/exceptions.filter';
-import { createAccountControllerDTO } from '@/modules/iam/application/dto/CreateAccountController.dto';
 import { DTOValidationPipes } from '@/shared/pipes/validation.pipes';
+import { createAccountControllerDTO } from '@/modules/iam/application/dto/createAccountController.dto';
 
 @Controller('iam')
 export class CreateAccountController {

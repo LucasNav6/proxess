@@ -4,6 +4,7 @@ import { CreateAccountController } from './modules/iam/presentation/controllers/
 import { CreateAccountService } from './modules/iam/presentation/controllers/createAccount/CreateAccount.service';
 import { MasterUserRepository } from './modules/iam/infraestructure/persistence/repository/masterUser.repository';
 import { EmailRepository } from './modules/iam/infraestructure/persistence/repository/email.repository';
+import { StatusController } from './modules/status/presentation/controllers/checkStatus.controller';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { EmailRepository } from './modules/iam/infraestructure/persistence/repos
       signOptions: { expiresIn: '3d' },
     }),
   ],
-  controllers: [CreateAccountController],
+  controllers: [CreateAccountController, StatusController],
   providers: [CreateAccountService, MasterUserRepository, EmailRepository],
 })
 export class AppModule {}

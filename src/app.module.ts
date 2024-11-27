@@ -5,6 +5,7 @@ import { CreateAccountService } from './modules/iam/presentation/controllers/cre
 import { MasterUserRepository } from './modules/iam/infraestructure/persistence/repository/masterUser.repository';
 import { EmailRepository } from './modules/iam/infraestructure/persistence/repository/email.repository';
 import { StatusController } from './modules/status/presentation/controllers/checkStatus.controller';
+import { EncryptionRepository } from './modules/iam/infraestructure/persistence/repository/encryption.repository';
 
 @Module({
   imports: [
@@ -15,6 +16,11 @@ import { StatusController } from './modules/status/presentation/controllers/chec
     }),
   ],
   controllers: [CreateAccountController, StatusController],
-  providers: [CreateAccountService, MasterUserRepository, EmailRepository],
+  providers: [
+    CreateAccountService,
+    MasterUserRepository,
+    EmailRepository,
+    EncryptionRepository,
+  ],
 })
 export class AppModule {}

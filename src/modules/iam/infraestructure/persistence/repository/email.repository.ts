@@ -19,6 +19,6 @@ export class EmailRepository {
       text: template,
     });
 
-    console.log(message);
+    return message;
   }
 }

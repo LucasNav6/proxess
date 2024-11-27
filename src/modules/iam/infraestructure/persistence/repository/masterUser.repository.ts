@@ -11,10 +11,10 @@ import { EncryptionRepository } from './encryption.repository';
 
 export class MasterUserRepository {
   private readonly database = null;
-  private readonly hashEncrypt = new EncryptionRepository();
   constructor(
     private readonly master_db_name = process.env.DATABASE_MASTER_NAME,
     private readonly master_db_token = process.env.DATABASE_MASTER_TOKEN,
+    private readonly hashEncrypt = new EncryptionRepository(),
   ) {
     this.database = databaseConnection(
       this.master_db_name,
@@ -47,7 +47,7 @@ export class MasterUserRepository {
       userEmail: email,
       isActive: USER_INACTIVE,
       userRole: ADMIN_USER,
-      accessCode: await this.hashEncrypt.hashText(
+      accessCode: await this.hashEncrypt.encrypt(
         JSON.stringify({
           accessCode: ACCESS_CODE,
           expiration: new Date(Date.now() + TEN_MINUTES).toISOString(),
@@ -61,5 +61,25 @@ export class MasterUserRepository {
       USER: newMasterUser,
       CODE: ACCESS_CODE,
     };
+  }
+
+  public async getByEmailInactiveUser(email: string): Promise<IMasterUser[]> {
+    const masterUser = await this.database
+      .select()
+      .from(DB_TBL_TENANT_USER)
+      .where(
+        and(
+          eq(DB_TBL_TENANT_USER.userEmail, email),
+          eq(DB_TBL_TENANT_USER.isActive, USER_INACTIVE),
+        ),
+      );
+    return masterUser;
+  }
+
+  public async activeUser(userUUID: string) {
+    await this.database
+      .update(DB_TBL_TENANT_USER)
+      .set({ isActive: USER_ACTIVE })
+      .where(eq(DB_TBL_TENANT_USER.userUUID, userUUID));
   }
 }

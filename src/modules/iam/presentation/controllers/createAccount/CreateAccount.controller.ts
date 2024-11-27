@@ -2,7 +2,10 @@ import { Controller, Post, Query, UseFilters, UsePipes } from '@nestjs/common';
 import { CreateAccountService } from './CreateAccount.service';
 import { CatchExceptionFilter } from '@/shared/filters/exceptions.filter';
 import { DTOValidationPipes } from '@/shared/pipes/validation.pipes';
-import { createAccountControllerDTO } from '@/modules/iam/application/dto/createAccountController.dto';
+import {
+  createAccountControllerDTO,
+  validateCreateAccountControllerDTO,
+} from '@/modules/iam/application/dto/createAccountController.dto';
 
 @Controller('iam')
 export class CreateAccountController {
@@ -19,5 +22,10 @@ export class CreateAccountController {
 
   @Post('validateAccount')
   @UseFilters(CatchExceptionFilter)
-  public async validateTheAccountCreatedWithCode() {}
+  @UsePipes(DTOValidationPipes)
+  public async validateTheAccountCreatedWithCode(
+    @Query() query: validateCreateAccountControllerDTO,
+  ) {
+    return await this.service.validateTheAccountCreatedWithCodeService(query);
+  }
 }

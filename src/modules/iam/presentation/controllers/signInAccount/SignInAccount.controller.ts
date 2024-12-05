@@ -34,7 +34,12 @@ export class SignInAccountController {
   @UsePipes(DTOValidationPipes)
   public async validateTheAccountCreatedWithCode(
     @Query() query: validateCreateAccountControllerDTO,
+    @Req() req: Request,
   ) {
-    return await this.service.validateTheAccountCreatedWithCodeService(query);
+    const userAgent = req.headers['user-agent'];
+    return await this.service.validateTheAccountWithCodeService(
+      query,
+      userAgent,
+    );
   }
 }

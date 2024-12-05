@@ -32,38 +32,58 @@ export class SignInAccountService {
 
       await this.emailRepository.sendEmail(
         query.email,
-        'Welcome to Proxess',
+        'Magic link to Proxess',
         'Code: ' + sessionCreated.ACCESS_CODE,
       );
     } catch (error) {
       throw new Error(error.message);
     }
   }
-  public async validateTheAccountCreatedWithCodeService(
+  public async validateTheAccountWithCodeService(
     query: validateCreateAccountControllerDTO,
+    userAgent: string,
   ) {
-    const user = await this.masterUserRepository.getByEmailInactiveUser(
+    const sessions = await this.masterSessionRepository.getInactiveSession(
       query.email,
     );
-    if (user.length === 0) throw new BadRequestException('User not found');
-    if (!user[0].accessCode) throw new BadRequestException('Code not valid');
-    const decryptedCode = await this.encryptionRepository.decrypt(
-      user[0].accessCode,
-    );
+    if (sessions.length === 0)
+      throw new BadRequestException('The user not have an inactive session');
 
-    const JSONDecodedCode = JSON.parse(decryptedCode) as {
-      accessCode: string;
-      expiration: string;
-    };
+    const validSession = sessions.find((session) => {
+      const userAgentSession = session.locationDevice;
+      if (userAgent !== userAgentSession) return false;
 
-    if (JSONDecodedCode.expiration < new Date().toISOString())
-      throw new BadRequestException('Code expired');
+      try {
+        const decryptCode = this.encryptionRepository.decrypt(
+          session.accessCode,
+        );
+        const JSONDecodedCode = JSON.parse(decryptCode) as {
+          accessCode: string;
+          expiration: string;
+        };
 
-    if (JSONDecodedCode.accessCode !== query.code)
-      throw new BadRequestException('Code not valid');
+        if (!(JSONDecodedCode.expiration < new Date().toISOString()))
+          return false;
+        if (JSONDecodedCode.accessCode !== query.code) return false;
 
-    await this.masterUserRepository.activeUser(user[0].userUUID);
+        return true;
+      } catch {
+        return false;
+      }
+    });
 
-    return { message: 'Account active successfully' };
+    if (!validSession) {
+      throw new BadRequestException('No valid session found');
+    }
+
+    await this.masterSessionRepository.activeSession(validSession.sessionUUID);
+
+    console.log(validSession);
+    const { publicServiceKey } =
+      await this.masterSessionRepository.assignRSASessionKeys(
+        validSession.sessionUUID,
+      );
+
+    return { message: 'Session active successfully', publicServiceKey };
   }
 }

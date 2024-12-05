@@ -9,9 +9,11 @@ import { EncryptionRepository } from './modules/iam/infraestructure/persistence/
 import { SignInAccountController } from './modules/iam/presentation/controllers/signInAccount/SignInAccount.controller';
 import { SignInAccountService } from './modules/iam/presentation/controllers/signInAccount/SignInAccount.service';
 import { MasterSessionRepository } from './modules/iam/infraestructure/persistence/repository/masterSession.repository';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,

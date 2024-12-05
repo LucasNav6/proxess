@@ -16,6 +16,7 @@ export class SignInAccountService {
     private readonly masterUserRepository: MasterUserRepository,
     private readonly emailRepository: EmailRepository,
     private readonly encryptionRepository: EncryptionRepository,
+    private jwtService: JwtService,
   ) {}
   public async openSessionWithActivated(
     query: createAccountControllerDTO,
@@ -63,8 +64,7 @@ export class SignInAccountService {
           expiration: string;
         };
 
-        if (!(JSONDecodedCode.expiration < new Date().toISOString()))
-          return false;
+        if (JSONDecodedCode.expiration < new Date().toISOString()) return false;
         if (JSONDecodedCode.accessCode !== query.code) return false;
 
         return true;
@@ -74,24 +74,27 @@ export class SignInAccountService {
     });
 
     if (!validSession) {
-      throw new BadRequestException('No valid session found');
+      throw new BadRequestException(
+        'No valid session found or session expired',
+      );
     }
 
     await this.masterSessionRepository.activeSession(validSession.sessionUUID);
 
-    console.log(validSession);
     const { publicServiceKey } =
       await this.masterSessionRepository.assignRSASessionKeys(
         validSession.sessionUUID,
       );
 
+    const accessToken = this.jwtService.sign({
+      userUUID: validSession.userUUID,
+      sessionUUID: validSession.sessionUUID,
+      publicServiceKey: publicServiceKey,
+    });
+
     return {
       message: 'Session active successfully',
-      access_token: await new JwtService().signAsync({
-        userUUID: validSession.userUUID,
-        sessionUUID: validSession.sessionUUID,
-        publicServiceKey: publicServiceKey,
-      }),
+      access_token: accessToken,
     };
   }
 }

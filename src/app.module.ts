@@ -6,6 +6,9 @@ import { MasterUserRepository } from './modules/iam/infraestructure/persistence/
 import { EmailRepository } from './modules/iam/infraestructure/persistence/repository/email.repository';
 import { StatusController } from './modules/status/presentation/controllers/checkStatus.controller';
 import { EncryptionRepository } from './modules/iam/infraestructure/persistence/repository/encryption.repository';
+import { SignInAccountController } from './modules/iam/presentation/controllers/signInAccount/SignInAccount.controller';
+import { SignInAccountService } from './modules/iam/presentation/controllers/signInAccount/SignInAccount.service';
+import { MasterSessionRepository } from './modules/iam/infraestructure/persistence/repository/masterSession.repository';
 
 @Module({
   imports: [
@@ -15,9 +18,15 @@ import { EncryptionRepository } from './modules/iam/infraestructure/persistence/
       signOptions: { expiresIn: '3d' },
     }),
   ],
-  controllers: [CreateAccountController, StatusController],
+  controllers: [
+    CreateAccountController,
+    SignInAccountController,
+    StatusController,
+  ],
   providers: [
     CreateAccountService,
+    SignInAccountService,
+    MasterSessionRepository,
     MasterUserRepository,
     EmailRepository,
     EncryptionRepository,

@@ -15,7 +15,7 @@ import {
 import { SignInAccountService } from './SignInAccount.service';
 
 @Controller('iam')
-export class CreateAccountController {
+export class SignInAccountController {
   constructor(private readonly service: SignInAccountService) {}
 
   @Post('openSession')

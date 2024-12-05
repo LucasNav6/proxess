@@ -18,7 +18,7 @@ export const DB_TBL_TENANT_SESSION = s.sqliteTable('tbl_tenant_sessions', {
   sessionUUID: s.text('session_uuid').primaryKey(),
   userUUID: s.text('user_uuid').notNull().unique(),
   privateServiceKey: s.text('private_key').notNull().unique(),
-  publicClientKey: s.text('public_client_key').notNull().unique(),
+  publicClientKey: s.text('public_client_session').notNull().unique(),
   accessCode: s.text('access_code').notNull(),
   isActive: s.integer('activated').notNull(),
   locationDevice: s.text('location_device').notNull(),

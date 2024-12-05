@@ -7,6 +7,7 @@ import { EncryptionRepository } from '@/modules/iam/infraestructure/persistence/
 import { MasterSessionRepository } from '@/modules/iam/infraestructure/persistence/repository/masterSession.repository';
 import { MasterUserRepository } from '@/modules/iam/infraestructure/persistence/repository/masterUser.repository';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class SignInAccountService {
@@ -84,6 +85,13 @@ export class SignInAccountService {
         validSession.sessionUUID,
       );
 
-    return { message: 'Session active successfully', publicServiceKey };
+    return {
+      message: 'Session active successfully',
+      access_token: await new JwtService().signAsync({
+        userUUID: validSession.userUUID,
+        sessionUUID: validSession.sessionUUID,
+        publicServiceKey: publicServiceKey,
+      }),
+    };
   }
 }

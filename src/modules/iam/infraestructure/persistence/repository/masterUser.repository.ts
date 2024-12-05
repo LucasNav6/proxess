@@ -47,7 +47,7 @@ export class MasterUserRepository {
       userEmail: email,
       isActive: USER_INACTIVE,
       userRole: ADMIN_USER,
-      accessCode: await this.hashEncrypt.encrypt(
+      accessCode: this.hashEncrypt.encrypt(
         JSON.stringify({
           accessCode: ACCESS_CODE,
           expiration: new Date(Date.now() + TEN_MINUTES).toISOString(),

@@ -14,7 +14,7 @@ export interface IMasterSession {
 export const SESSION_ACTIVE = 1;
 export const SESSION_INACTIVE = 0;
 
-export const DB_TBL_TENANT_SESSION = s.sqliteTable('tbl_tenant_users', {
+export const DB_TBL_TENANT_SESSION = s.sqliteTable('tbl_tenant_sessions', {
   sessionUUID: s.text('session_uuid').primaryKey(),
   userUUID: s.text('user_uuid').notNull().unique(),
   privateServiceKey: s.text('private_key').notNull().unique(),
